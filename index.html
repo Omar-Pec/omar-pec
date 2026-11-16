@@ -29,7 +29,7 @@ h1{font-size:1.5rem;font-weight:800;letter-spacing:-.01em}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
 .card.max{border-color:var(--warn)}
-.name{font-weight:600;font-size:1.05rem;margin-bottom:10px}
+.head{display:flex;align-items:center;gap:12px;margin-bottom:12px;min-height:60px}.name{font-weight:600;font-size:1.05rem;line-height:1.25}.ic{flex:none;display:grid;place-items:center;border-radius:50%}.ic svg{width:64%;height:64%}.rn{display:flex;align-items:center;gap:10px}
 .amt{font-size:1.9rem;font-weight:800;font-variant-numeric:tabular-nums;margin-bottom:10px}
 .mini{display:flex;gap:3px;margin-bottom:14px}
 .mini .seg{height:8px}
@@ -110,15 +110,17 @@ input{font:inherit;height:56px;border-radius:12px;border:1px solid var(--line);b
 
 <script>
 const C={
-  TITULO:"Proyecto Integrado Técnico Profesional en Informáticaa",
+  TITULO:"Proyecto Integrado Técnico Profesional en Informática",
   CAPITAL:100000,          // capital de cada inversionista
   PASO:5000,               // cada clic suma o resta este monto
   MINIMO:0,                // sin mínimo por proyecto
   MAX_PCT:0.5,             // máximo por proyecto (50%)
-  GRUPOS:["Clasificación de Productos Inteligente","Supermercado Automatizado","Edificio Domótico Inteligente","Estacionamiento Inteligente","Invernadero Automatizado","Almacén Automatizado con Brazo Robótico","Sistema Inteligente de Semáforos y Control de Tráfico"],
-  SCRIPT_URL:"https://script.google.com/macros/s/AKfycbx2C0vj58I2Y3zy4ahzLv5Ww7g_wPYGrHzQtFf578neGozKHFnQIMh32GKEizcA4Zsx/exec",
+  GRUPOS:["Clasificadora de Bebidas Inteligente","Supermercado Automatizado","Casas Domóticas Inteligentes","Estacionamiento Inteligente","Invernadero Automatizado","Almacén Automatizado con Brazo Robótico","Sistema Inteligente de Semáforos y Control de Tráfico"],
+  SCRIPT_URL:"PEGA_AQUI_LA_URL_DE_APPS_SCRIPT",
   PIN:"1234"               // PIN para ver resultados (#resultados)
 };
+const COL=["#1f9fd0", "#f08a24", "#7c5cf0", "#e5484d", "#2fa866", "#d6409f", "#475569"], ICO=["<path d=\"M27 6h10v10c0 4 8 7 8 14v24a3 3 0 0 1-3 3H22a3 3 0 0 1-3-3V30c0-7 8-10 8-14z\"/><path d=\"M19 36h26v12H19\"/><path d=\"M27 6h10\"/>", "<path d=\"M6 10h8l7 28h28l6-20H16\"/><circle cx=\"25\" cy=\"50\" r=\"4\"/><circle cx=\"44\" cy=\"50\" r=\"4\"/>", "<path d=\"M7 30L32 9l25 21\"/><path d=\"M13 27v29h38V27\"/><path d=\"M23 38a13 13 0 0 1 18 0M27 43a7 7 0 0 1 10 0\"/><circle cx=\"32\" cy=\"49\" r=\"1.6\" fill=\"#fff\"/>", "<rect x=\"10\" y=\"10\" width=\"44\" height=\"44\" rx=\"9\"/><path d=\"M25 46V18h9a8.5 8.5 0 0 1 0 17h-9\"/>", "<path d=\"M7 28L32 10l25 18\"/><path d=\"M12 26v28h40V26\"/><path d=\"M32 54V38M32 45c-8 0-10-6-10-10 6 0 10 3 10 10zM32 41c6 0 9-5 9-9-6 0-9 3-9 9z\"/>", "<path d=\"M10 56h26M23 56V44\"/><circle cx=\"23\" cy=\"42\" r=\"3\"/><path d=\"M23 39V26L42 14\"/><circle cx=\"23\" cy=\"26\" r=\"3\"/><path d=\"M42 14l11 3M42 14l5 10\"/><rect x=\"42\" y=\"45\" width=\"13\" height=\"11\"/>", "<rect x=\"19\" y=\"5\" width=\"26\" height=\"48\" rx=\"7\"/><circle cx=\"32\" cy=\"17\" r=\"5\" fill=\"#e5484d\"/><circle cx=\"32\" cy=\"29\" r=\"5\" fill=\"#f5b301\"/><circle cx=\"32\" cy=\"41\" r=\"5\" fill=\"#2fcf80\"/><path d=\"M32 53v7M24 60h16\"/>"];
+const ic=(i,z)=>i<0?"":`<span class="ic" style="background:${COL[i]};width:${z}px;height:${z}px"><svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">${ICO[i]}</svg></span>`;
 const MAX=C.CAPITAL*C.MAX_PCT, $=s=>document.querySelector(s);
 const fmt=n=>"Q"+Number(n).toLocaleString("en-US");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -136,7 +138,7 @@ function draw(){
   $("#rule").textContent=`Máximo por proyecto: ${fmt(MAX)}. Cada toque suma o resta ${fmt(C.PASO)}.`;
   $("#grid").innerHTML=C.GRUPOS.map((g,i)=>{
     const atMax=m[i]>=MAX;
-    return `<article class="card${atMax?" max":""}"><div class="name">${esc(g)}</div><div class="amt">${fmt(m[i])}</div>
+    return `<article class="card${atMax?" max":""}"><div class="head">${ic(i,60)}<div class="name">${esc(g)}</div></div><div class="amt">${fmt(m[i])}</div>
     <div class="mini">${segs(m[i]/C.PASO,MAX/C.PASO)}</div>
     <div class="ctl"><button class="step" data-i="${i}" data-d="-1" aria-label="Quitar a ${esc(g)}" ${m[i]-C.PASO<C.MINIMO?"disabled":""}>−</button>
     <button class="step" data-i="${i}" data-d="1" aria-label="Sumar a ${esc(g)}" ${atMax||l<C.PASO?"disabled":""}>+</button></div>
@@ -199,7 +201,7 @@ async function loadRes(){
     const r=await fetch(C.SCRIPT_URL+"?t="+Date.now()); const d=await r.json();
     const g=d.grupos.slice().sort((a,b)=>b.total-a.total), top=Math.max(1,...g.map(x=>x.total)), all=g.reduce((a,x)=>a+x.total,0)||1;
     $("#resinfo").textContent=`${d.inversionistas} inversionistas · ${fmt(all)} invertidos en total`;
-    $("#res").innerHTML=g.map(x=>`<div class="rrow"><div>${esc(x.nombre)}</div><div class="track"><div class="fill" style="width:${x.total/top*100}%"></div></div><div class="rv">${fmt(x.total)} · ${Math.round(x.total/all*100)}%</div></div>`).join("");
+    $("#res").innerHTML=g.map(x=>`<div class="rrow"><div class="rn">${ic(C.GRUPOS.indexOf(x.nombre),40)}<span>${esc(x.nombre)}</span></div><div class="track"><div class="fill" style="width:${x.total/top*100}%"></div></div><div class="rv">${fmt(x.total)} · ${Math.round(x.total/all*100)}%</div></div>`).join("");
   }catch(e){$("#resinfo").textContent="No se pudieron cargar los datos. Revisa la URL del script."}
 }
 $("#pinok").onclick=()=>{
